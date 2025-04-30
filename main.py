@@ -146,7 +146,7 @@ async def insert_data(user: Chat_User, background_tasks: BackgroundTasks):
 
         # Send both emails
         background_tasks.add_task(send_email, user.email, user_subject, user_html)
-        background_tasks.add_task(send_email, "google.info@meridian.info", notify_subject, notify_html)
+        background_tasks.add_task(send_email, "sales.gws@merdian.info", notify_subject, notify_html)
 
         return {"message": "Data inserted and emails sent successfully"}
     except Error as e:
