@@ -36,7 +36,7 @@ class Chat_User(BaseModel):
     phone: str
     Inquiry_type: str
     company_name: str
-    message: str
+
 
 # DB connection
 def create_connection(host_name, user_name, user_password, db_name):
@@ -82,7 +82,7 @@ async def send_email(recipient_email: str, subject: str, html_content: str):
 # POST /insert endpoint
 @app.post('/insert')
 async def insert_data(user: Chat_User, background_tasks: BackgroundTasks):
-    print("Received data:", user.dict())
+    print("Received data:", user)
 
     connection = create_connection(host_name, user_name, user_password, db_name)
     if connection is None:
@@ -90,8 +90,8 @@ async def insert_data(user: Chat_User, background_tasks: BackgroundTasks):
 
     cursor = connection.cursor()
     query = """
-        INSERT INTO googleworkspace (full_name, email, phone, inquiry_type, company_name, message)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO googleworkspace (full_name, email, phone, inquiry_type, company_name)
+        VALUES (%s, %s, %s, %s, %s)
     """
     values = (
         user.full_Name,
@@ -99,7 +99,7 @@ async def insert_data(user: Chat_User, background_tasks: BackgroundTasks):
         user.phone,
         user.Inquiry_type,
         user.company_name,
-        user.message
+        
     )
 
     try:
@@ -119,7 +119,7 @@ async def insert_data(user: Chat_User, background_tasks: BackgroundTasks):
                 <li><strong>Phone:</strong> {user.phone}</li>
                 <li><strong>Inquiry Type:</strong> {user.Inquiry_type}</li>
                 <li><strong>Company:</strong> {user.company_name}</li>
-                <li><strong>Message:</strong> {user.message}</li>
+        
             </ul>
             <p>Best Regards,<br/>Meridian Solutions</p>
         </body>
@@ -137,6 +137,7 @@ async def insert_data(user: Chat_User, background_tasks: BackgroundTasks):
                 <li><strong>Phone:</strong> {user.phone}</li>
                 <li><strong>Inquiry Type:</strong> {user.Inquiry_type}</li>
                 <li><strong>Company:</strong> {user.company_name}</li>
+               
 
             </ul>
         </body>
@@ -145,7 +146,7 @@ async def insert_data(user: Chat_User, background_tasks: BackgroundTasks):
 
         # Send both emails
         background_tasks.add_task(send_email, user.email, user_subject, user_html)
-        background_tasks.add_task(send_email, "sales.gws@merdian.info", notify_subject, notify_html)
+        background_tasks.add_task(send_email, "google.info@meridian.info", notify_subject, notify_html)
 
         return {"message": "Data inserted and emails sent successfully"}
     except Error as e:
